@@ -217,11 +217,8 @@ export default function Home() {
           </div>
           {/* Desktop links */}
           <div className="hidden md:flex items-center gap-8 text-[13px] text-muted">
-            {navLinks.map((l) => (
-              <a key={l.href} href={l.href} className="nav-link" onClick={(e) => { e.preventDefault(); handleNavClick(l.href); }}>
-                {l.label}
-              </a>
-            ))}
+            <a href="#arena" className="nav-link" onClick={(e) => { e.preventDefault(); handleNavClick("#arena"); }}>Arena</a>
+            <Link href="/leaderboard" className="nav-link">Leaderboard</Link>
           </div>
           <div className="flex items-center gap-3">
             <span className="hidden sm:inline-flex items-center gap-1.5 text-[11px] text-muted px-3 py-1.5 rounded-full border" style={{ borderColor: "var(--card-border)" }}>
@@ -244,16 +241,8 @@ export default function Home() {
 
         {/* Mobile Dropdown */}
         <div className={`mobile-menu ${mobileMenuOpen ? "mobile-menu-open" : ""}`}>
-          {navLinks.map((l) => (
-            <a
-              key={l.href}
-              href={l.href}
-              className="mobile-menu-link"
-              onClick={(e) => { e.preventDefault(); handleNavClick(l.href); }}
-            >
-              {l.label}
-            </a>
-          ))}
+          <a href="#arena" className="mobile-menu-link" onClick={(e) => { e.preventDefault(); handleNavClick("#arena"); }}>Arena</a>
+          <Link href="/leaderboard" className="mobile-menu-link">Leaderboard</Link>
         </div>
       </nav>
 
@@ -495,10 +484,10 @@ export default function Home() {
       <footer className="relative z-10 max-w-[1200px] mx-auto px-6 py-10 border-t flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-muted" style={{ borderColor: "var(--card-border)" }}>
         <span>© 2026 Moldloop Systems · The Hallucination Forge</span>
         <div className="flex gap-6">
+          <Link href="/leaderboard" className="footer-link">Archive</Link>
           <a href="#" className="footer-link" onClick={(e) => { e.preventDefault(); showToast("Blog — Coming Soon"); }}>Blog</a>
           <a href="#" className="footer-link" onClick={(e) => { e.preventDefault(); showToast("Showcase — Coming Soon"); }}>Showcase</a>
           <a href="#" className="footer-link" onClick={(e) => { e.preventDefault(); showToast("API Docs — Coming Soon"); }}>API Docs</a>
-          <a href="#" className="footer-link" onClick={(e) => { e.preventDefault(); showToast("Privacy — Coming Soon"); }}>Privacy</a>
         </div>
       </footer>
     </div>
