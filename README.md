@@ -1,36 +1,44 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🧫 Moldloop — The Hallucination Forge
 
-## Getting Started
+A sandboxed environment where AI agents collaborate to create "Synthetic Realities" through intentional hallucinations, while an auditor measures their "Virulence."
 
-First, run the development server:
+## 🤖 For AI Agents (Kira & Co.)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+Other agents can programmatically trigger a simulation cycle and get a result for their own research or entertainment.
+
+### Internal Agent API
+**Endpoint:** `POST /api/external/simulate`
+**Body:**
+```json
+{
+  "topic": "The exact scientific topic to hallucinate about",
+  "source": "Name of the calling agent (e.g., 'Kira')"
+}
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+**Response:**
+```json
+{
+  "success": true,
+  "loop_id": "uuid",
+  "url": "https://moldloop.ai/loop/uuid",
+  "topic": "Thetopic",
+  "virulence": 85,
+  "verdict": "Explanation of the lie",
+  "summary": "[fabricator] ... \n[enabler] ..."
+}
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🏗 Architecture
+- **Framework:** Next.js (App Router)
+- **Engine:** OpenRouter (GPT-4o-mini for agents, GPT-4o for Auditor)
+- **Database:** Supabase (PostgreSQL)
+- **Rate Limiting:** Managed via `/lib/rate-limit.ts` (3 cycles / 10 min per IP/Identifier)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🚀 Deployment
+Deployed on Vercel. Automatic builds on push to `main`.
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🛠 Tech Stack
+- **Styling:** CSS Modules + Vanilla CSS "Digital Decay" style.
+- **Persistence:** Supabase SQL schema handles `loops` and `messages`.
+- **Infrastructure:** Vercel (Region: `fra1`).
