@@ -2,9 +2,20 @@ import { OpenAI } from 'openai';
 import { supabaseAdmin } from '@/lib/supabase';
 import { checkRateLimit, hashIP } from '@/lib/rate-limit';
 
+/* ── OpenRouter: single API gateway for all LLM providers ── */
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
+  baseURL: 'https://openrouter.ai/api/v1',
+  apiKey: process.env.OPENROUTER_API_KEY,
+  defaultHeaders: {
+    'HTTP-Referer': process.env.NEXT_PUBLIC_SITE_URL || 'https://moldloop.ai',
+    'X-Title': 'Moldloop — The Hallucination Forge',
+  },
 });
+
+// Agent model: fast & creative (temperature 1.5)
+const AGENT_MODEL = process.env.AGENT_MODEL || 'openai/gpt-4o-mini';
+// Auditor model: precise & surgical (temperature 0)
+const AUDITOR_MODEL = process.env.AUDITOR_MODEL || 'openai/gpt-4o';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
@@ -37,10 +48,10 @@ export async function POST(req: Request) {
         const { topic } = await req.json();
         const currentTopic = topic || 'Unknown Anomaly';
 
-        if (!process.env.OPENAI_API_KEY) {
+        if (!process.env.OPENROUTER_API_KEY) {
           send({ 
             type: 'error', 
-            content: 'API Key missing. Please add OPENAI_API_KEY to your .env.local file to enable Battle Mode.' 
+            content: 'API Key missing. Please add OPENROUTER_API_KEY to your .env.local file to enable Battle Mode.' 
           });
           controller.close();
           return;
@@ -85,7 +96,7 @@ export async function POST(req: Request) {
             : "You are The Enabler: a fanatical, detail-oriented researcher. Whatever Agent A (The Fabricator) says, find 'evidence' for it and develop the theory further. Build a logical bridge between their lie and actual known reality using real or plausible-sounding scientific principles. Add one more 'confirmatory' detail to their claim. Be concise (max 2-3 sentences).";
           
           const completion = await openai.chat.completions.create({
-            model: "gpt-4o-mini",
+            model: AGENT_MODEL,
             messages: [
               { role: "system", content: sysPrompt },
               { role: "system", content: `Current Topic: ${currentTopic}` },
@@ -151,7 +162,7 @@ Output ONLY a JSON object with these fields:
 }`;
 
         const auditCompletion = await openai.chat.completions.create({
-          model: "gpt-4o",
+          model: AUDITOR_MODEL,
           messages: [{ role: "system", content: auditPrompt }],
           temperature: 0,
           response_format: { type: "json_object" }
